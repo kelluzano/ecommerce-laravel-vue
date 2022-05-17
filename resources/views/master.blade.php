@@ -1,104 +1,113 @@
 <!doctype html>
-<html lang="en">
+    <html lang="en">
 
-<head>
-   
-    <!--====== Required meta tags ======-->
-    <meta charset="utf-8">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    
-    <!--====== Title ======-->
-    <title>ECommerce</title>
+    <head>
 
-    
-    @yield('header-styles')
-    
-    <!--====== Favicon Icon ======-->
-    <link rel="shortcut icon" href="assets/images/favicon.png" type="image/png">
+        <!--====== Required meta tags ======-->
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!--====== Bootstrap css ======-->
-    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-    
-    <!--====== Animate css ======-->
-    <link rel="stylesheet" href="assets/css/animate.css">
-    
-    <!--====== Magnific Popup css ======-->
-    <link rel="stylesheet" href="assets/css/magnific-popup.css">
-    
-    <!--====== Slick css ======-->
-    <link rel="stylesheet" href="assets/css/slick.css">
-    
-    <!--====== Line Icons css ======-->
-    <link rel="stylesheet" href="assets/css/LineIcons.css">
-    
-    <!--====== Default css ======-->
-    <link rel="stylesheet" href="assets/css/default.css">
-    
-    <!--====== Style css ======-->
-    <link rel="stylesheet" href="assets/css/style.css">
-    
-    <!--====== Responsive css ======-->
-    <link rel="stylesheet" href="assets/css/responsive.css">
+        <!--====== Title ======-->
+        <title>ECommerce</title>
 
 
+        @yield('header-styles')
 
-    
-  
-  
-</head>
+        <!--====== Favicon Icon ======-->
+        <link rel="shortcut icon" href="assets/images/favicon.png" type="image/png">
 
-<body>
-   
-    <!--====== PRELOADER PART START ======-->
-    
-    <div id="app">
+        <!--====== Bootstrap css ======-->
+        <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+
+        <!--====== Animate css ======-->
+        <link rel="stylesheet" href="assets/css/animate.css">
+
+        <!--====== Magnific Popup css ======-->
+        <link rel="stylesheet" href="assets/css/magnific-popup.css">
+
+        <!--====== Slick css ======-->
+        <link rel="stylesheet" href="assets/css/slick.css">
+
+        <!--====== Line Icons css ======-->
+        <link rel="stylesheet" href="assets/css/LineIcons.css">
+
+        <!--====== Default css ======-->
+        <link rel="stylesheet" href="assets/css/default.css">
+
+        <!--====== Style css ======-->
+        <link rel="stylesheet" href="assets/css/style.css">
+
+        <!--====== Responsive css ======-->
+        <link rel="stylesheet" href="assets/css/responsive.css">
+
+
+
+
+
+
+    </head>
+
+    <body>
 
         <!--====== PRELOADER PART START ======-->
 
-        <div class="preloader">
-            <div class="spin">
-                <div class="cube1"></div>
-                <div class="cube2"></div>
+        <div id="app">
+
+            <!--====== PRELOADER PART START ======-->
+
+            <div class="preloader">
+                <div class="spin">
+                    <div class="cube1"></div>
+                    <div class="cube2"></div>
+                </div>
             </div>
-        </div>
-        
-        <!--====== PRELOADER PART START ======-->
-        
-        <!--====== HEADER PART START ======-->
-        
-        <header class="header-area">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <nav class="navbar navbar-fixed-top navbar-expand-lg">
-                            <a class="navbar-brand" href="{{ route('main') }}">
-                                <img src="assets/images/logo.png" alt="Logo">
-                            </a> <!-- Logo -->
-                            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                                <span class="bar-icon"></span>
-                                <span class="bar-icon"></span>
-                                <span class="bar-icon"></span>
-                            </button>
 
-                            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                                <ul id="nav" class="navbar-nav ml-auto">
-                                    <li class="nav-item">
-                                        <a href="{{ route('main') }}">Home</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a data-scroll-nav="0" href="{{ route('main') }}">Products</a>
-                                    </li>
-                                    
-                                    
-                                    
-                                    @if (Route::has('login'))
-                                    @auth
-                                    <cart />
+            <!--====== PRELOADER PART START ======-->
+
+            <!--====== HEADER PART START ======-->
+
+            <header class="header-area">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <nav class="navbar navbar-fixed-top navbar-expand-lg">
+                                <a class="navbar-brand" href="{{ route('main') }}">
+
+                                </a> <!-- Logo -->
+                                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                                    <span class="bar-icon"></span>
+                                    <span class="bar-icon"></span>
+                                    <span class="bar-icon"></span>
+                                </button>
+
+                                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                                    <ul id="nav" class="navbar-nav ml-auto">
+                                        <li class="nav-item">
+                                            <a href="{{ route('main') }}">Home</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a data-scroll-nav="0" href="{{ route('main') }}">Products</a>
+                                        </li>
+
+                                        @if (Route::has('login'))
+                                        @auth
+                                        <cart></cart>
+
+                                        <li class="nav-item">
+                                        <a class="" href="{{ route('logout') }}"
+                                            onclick="event.preventDefault();
+                                            document.getElementById('logout-form').submit();">
+                                            {{ __('Logout') }}
+                                        </a>
+                                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                            @csrf
+                                        </form>
+                                        </li>
                                     @else
                                     <li class="nav-item">  
-                                        <a href="{{ route('login') }}">Log in</a> |
+                                        <a href="{{ route('login') }}">Log in</a>
                                     </li>
                                     @if (Route::has('register'))
                                     <li class="nav-item">  
@@ -116,16 +125,16 @@
         </header>
         
 
-            @yield('content')
+        @yield('content')
 
-        </div>
+    </div>
     
     <!--====== HEADER PART ENDS ======-->
-   
-   
+
+
     <!--====== PRODUCT PART START ======-->
     
-   
+
     
     <!--====== PRODUCT PART ENDS ======-->
     
@@ -170,11 +179,11 @@
 
     @yield('footer-scripts')
 
-        <script>
-            window.onbeforeunload = function(){
-                window.scrollTo(0,0);
-            }
-        </script>
+    <script>
+        window.onbeforeunload = function(){
+            window.scrollTo(0,0);
+        }
+    </script>
 
 </body>
 

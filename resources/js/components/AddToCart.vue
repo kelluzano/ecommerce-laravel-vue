@@ -9,7 +9,7 @@
                 
             }
         },
-        props: ['productId','userId'],
+        props: ['productId','userId','productName'],
         methods: {
             async addProductToCart(){
                 //Check if user logged in
@@ -22,6 +22,9 @@
                 let response = await axios.post('/cart', {
                     'product_id': this.productId
                 });
+
+                let msg = 'Item: '+this.productName+' added to your cart.';
+                this.$toastr.s(msg);
 
                 this.$root.$emit('changeInCart', response.data.items);
             }

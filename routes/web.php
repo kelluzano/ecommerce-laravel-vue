@@ -17,6 +17,8 @@ use Illuminate\Http\Request;
 
 
 Route::get('/', [App\Http\Controllers\ProductsController::class, 'index'])->name('main');
+Route::get('/products', [App\Http\Controllers\ProductsController::class, 'getProducts'])->name('getProducts');
+
 Route::view('demo','demo');
 Auth::routes(['verify' => true]);
 
