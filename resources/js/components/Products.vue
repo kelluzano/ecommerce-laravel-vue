@@ -51,8 +51,6 @@
         },
         mounted() {
 
-            console.log(this.$el);
-
         },
         updated(){
             $('.product-items-active').slick({

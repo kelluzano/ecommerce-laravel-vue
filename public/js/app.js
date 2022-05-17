@@ -5951,9 +5951,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   created: function created() {
     this.getProducts();
   },
-  mounted: function mounted() {
-    console.log(this.$el);
-  },
+  mounted: function mounted() {},
   updated: function updated() {
     $('.product-items-active').slick({
       dots: false,
