@@ -5,13 +5,22 @@
 				<div class="col-lg-8 col-md-8 col-sm-7 col-xs-12">
 					<div class="box">
 						<h3 class="box-title">Products in your Cart</h3>
-						<div class="plan-selection" v-for="item in items" :key="item.id">
-							<div class="plan-data" v-if="item.name">
+						<div class="plan-selection" v-if="item.name" v-for="(item,index) in items" :key="item.id">
+							<div class="row">
+								<div class="col-md-12">
+									<button class="btn btn-sm btn-danger float-right" @click.prevent="removeFromCart(index)"><i class="lni-trash"></i></button>
+								</div>
+							</div>
+							<div class="plan-data">
 								
-								<label for="question1">{{item.name}}</label>
+								<label for="quantity">{{item.name}}</label>
 								<p class="plan-text">
-									Quantitiy: {{item.quantity}}
+									Quantitiy: 
+									<input id="quantity" type="text" :value="item.quantity" readonly style="width:50px; text-align: center;">
+									<button class="btn btn-sm btn-danger" :disabled="item.quantity == 1" @click="updateProductQuantity(item.id,'decrement')">-</button>
+									<button class="btn btn-sm btn-success" @click="updateProductQuantity(item.id,'increment')">+</button>
 								</p>
+								
 								<span class="plan-price">Price: ${{item.sale_price}}</span>
 							</div>
 						</div>
@@ -96,11 +105,13 @@
 									</div>
 									<div class="form-group">
 										<div class="col-md-12"><strong>Credit Card Number:</strong></div>
-										<div class="col-md-12"><input type="text" class="form-control" v-model="cardNumber" name="car_number" value="4242424242424242" readonly/></div>
+										<div class="col-md-12"><input type="text" class="form-control" v-model="cardNumber" value="4242424242424242" readonly/></div>
 									</div>
 									<div class="form-group">
 										<div class="col-md-12"><strong>Card CVV:</strong></div>
-										<div class="col-md-12"><input type="text" class="form-control" v-model="cvv" name="car_code" value="" /></div>
+										<div class="col-md-12">
+											<input type="text" class="form-control input-number" v-model="cvv" value=""/>
+										</div>
 									</div>
 									<div class="form-group">
 										<div class="col-md-12">
@@ -171,10 +182,10 @@
 									<p class="summary-text">
 										${{summaryItem.total}}
 									</p>
-									<span class="summary-small-text pull-right">
-										Q: {{summaryItem.quantity}} x  
-										P:${{summaryItem.sale_price}} 
-									</span>
+									
+									<span class="summary-small-text pull-right">Q: {{summaryItem.quantity}}      X</span>
+									<span class="summary-small-text pull-right">P: ${{summaryItem.sale_price}} </span>
+									
 								</div>
 							</div>
 						</div>
@@ -183,7 +194,7 @@
 							<div class="summary-content">
 								<div class="summary-head"> <h5 class="summary-title">Total</h5></div>
 								<div class="summary-price">
-									<p class="summary-text">${{items.totalAmount}}</p>
+									<p class="summary-text" style="font-weight: bold;">${{items.totalAmount}}</p>
 								</div>
 								
 							</div>
@@ -219,9 +230,13 @@
 			}
 		},
 		methods: {
-			async getCartItems(){
-				let response = await axios.post('/checkout/get/items');
-				this.items = response.data;
+			getCartItems(){
+				axios.post('/checkout/get/items')
+				.then((response) => {
+					this.items = response.data
+					console.log(this.items);
+				});
+				
 			},
 			async getUserAddress(){
 				if(this.firstName != '' && this.address != '' && this.cardNumber != '' && this.cvv != ''){
@@ -256,10 +271,55 @@
 				}else{
 					this.$toastr.e('User info incomplete');
 				}
-			}	
+			},
+			updateProductQuantity(productId,type){
+				const vm = this;
+
+				axios.post('/product/update/quantity',{
+					'productId': productId,
+					'type': type
+				}).then((response) => {
+					vm.items[productId].quantity = response.data.quantity;
+					vm.items[productId].total = response.data.total;
+					vm.$root.$emit('changeInCart', response.data.totalItemCount);
+					
+					// //calculate overall total
+					var overallTotal = 0;
+					$.each(vm.items, function (key,value){
+						if(typeof value.total != "undefined"){
+							overallTotal += value.total;
+							
+						}
+					});
+					vm.items.totalAmount = overallTotal;
+
+				});
+			},
+			removeFromCart(index){
+
+				axios.post('/product/remove', {
+					'productId': index,
+				}).then((response) => {
+					
+					this.$toastr.e(response.data.message);
+					this.$root.$emit('changeInCart', response.data.totalItemCount);
+					this.$delete(this.items,index);
+
+					var overallTotal = 0;
+					$.each(this.items, function (key,value){
+						if(typeof value.total != "undefined"){
+							overallTotal += value.total;
+							
+						}
+					});
+					this.items.totalAmount = overallTotal;
+
+				});
+			},
 		},	
 		created(){
 			this.getCartItems();
+
 		},
 		computed: {
 			years(){
@@ -271,7 +331,10 @@
 				}
 				return this.newyears = years;
 
-			}
+			},
+
+
+
 		}
 
 	}

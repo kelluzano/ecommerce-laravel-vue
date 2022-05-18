@@ -5737,6 +5737,17 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
@@ -5762,42 +5773,26 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     getCartItems: function getCartItems() {
       var _this = this;
 
+      axios.post('/checkout/get/items').then(function (response) {
+        _this.items = response.data;
+        console.log(_this.items);
+      });
+    },
+    getUserAddress: function getUserAddress() {
+      var _this2 = this;
+
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
         var response;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                _context.next = 2;
-                return axios.post('/checkout/get/items');
-
-              case 2:
-                response = _context.sent;
-                _this.items = response.data;
-
-              case 4:
-              case "end":
-                return _context.stop();
-            }
-          }
-        }, _callee);
-      }))();
-    },
-    getUserAddress: function getUserAddress() {
-      var _this2 = this;
-
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
-        var response;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
-          while (1) {
-            switch (_context2.prev = _context2.next) {
-              case 0:
                 if (!(_this2.firstName != '' && _this2.address != '' && _this2.cardNumber != '' && _this2.cvv != '')) {
-                  _context2.next = 8;
+                  _context.next = 8;
                   break;
                 }
 
-                _context2.next = 3;
+                _context.next = 3;
                 return axios.post('/process/user/payment', {
                   'firstName': _this2.firstName,
                   'lastName': _this2.lastName,
@@ -5818,7 +5813,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 });
 
               case 3:
-                response = _context2.sent;
+                response = _context.sent;
 
                 if (response.data.success) {
                   _this2.$toastr.s(response.data.success);
@@ -5829,7 +5824,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 setTimeout(function () {
                   window.location.href = "/";
                 }, 2500);
-                _context2.next = 9;
+                _context.next = 9;
                 break;
 
               case 8:
@@ -5837,11 +5832,51 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 9:
               case "end":
-                return _context2.stop();
+                return _context.stop();
             }
           }
-        }, _callee2);
+        }, _callee);
       }))();
+    },
+    updateProductQuantity: function updateProductQuantity(productId, type) {
+      var vm = this;
+      axios.post('/product/update/quantity', {
+        'productId': productId,
+        'type': type
+      }).then(function (response) {
+        vm.items[productId].quantity = response.data.quantity;
+        vm.items[productId].total = response.data.total;
+        vm.$root.$emit('changeInCart', response.data.totalItemCount); // //calculate overall total
+
+        var overallTotal = 0;
+        $.each(vm.items, function (key, value) {
+          if (typeof value.total != "undefined") {
+            overallTotal += value.total;
+          }
+        });
+        vm.items.totalAmount = overallTotal;
+      });
+    },
+    removeFromCart: function removeFromCart(index) {
+      var _this3 = this;
+
+      axios.post('/product/remove', {
+        'productId': index
+      }).then(function (response) {
+        _this3.$toastr.e(response.data.message);
+
+        _this3.$root.$emit('changeInCart', response.data.totalItemCount);
+
+        _this3.$delete(_this3.items, index);
+
+        var overallTotal = 0;
+        $.each(_this3.items, function (key, value) {
+          if (typeof value.total != "undefined") {
+            overallTotal += value.total;
+          }
+        });
+        _this3.items.totalAmount = overallTotal;
+      });
     }
   },
   created: function created() {
@@ -29670,32 +29705,89 @@ var render = function () {
                 _vm._v("Products in your Cart"),
               ]),
               _vm._v(" "),
-              _vm._l(_vm.items, function (item) {
-                return _c(
-                  "div",
-                  { key: item.id, staticClass: "plan-selection" },
-                  [
-                    item.name
-                      ? _c("div", { staticClass: "plan-data" }, [
-                          _c("label", { attrs: { for: "question1" } }, [
-                            _vm._v(_vm._s(item.name)),
-                          ]),
+              _vm._l(_vm.items, function (item, index) {
+                return item.name
+                  ? _c("div", { key: item.id, staticClass: "plan-selection" }, [
+                      _c("div", { staticClass: "row" }, [
+                        _c("div", { staticClass: "col-md-12" }, [
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-sm btn-danger float-right",
+                              on: {
+                                click: function ($event) {
+                                  $event.preventDefault()
+                                  return _vm.removeFromCart(index)
+                                },
+                              },
+                            },
+                            [_c("i", { staticClass: "lni-trash" })]
+                          ),
+                        ]),
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "plan-data" }, [
+                        _c("label", { attrs: { for: "quantity" } }, [
+                          _vm._v(_vm._s(item.name)),
+                        ]),
+                        _vm._v(" "),
+                        _c("p", { staticClass: "plan-text" }, [
+                          _vm._v(
+                            "\n\t\t\t\t\t\t\t\tQuantitiy: \n\t\t\t\t\t\t\t\t"
+                          ),
+                          _c("input", {
+                            staticStyle: {
+                              width: "50px",
+                              "text-align": "center",
+                            },
+                            attrs: {
+                              id: "quantity",
+                              type: "text",
+                              readonly: "",
+                            },
+                            domProps: { value: item.quantity },
+                          }),
                           _vm._v(" "),
-                          _c("p", { staticClass: "plan-text" }, [
-                            _vm._v(
-                              "\n\t\t\t\t\t\t\t\tQuantitiy: " +
-                                _vm._s(item.quantity) +
-                                "\n\t\t\t\t\t\t\t"
-                            ),
-                          ]),
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-sm btn-danger",
+                              attrs: { disabled: item.quantity == 1 },
+                              on: {
+                                click: function ($event) {
+                                  return _vm.updateProductQuantity(
+                                    item.id,
+                                    "decrement"
+                                  )
+                                },
+                              },
+                            },
+                            [_vm._v("-")]
+                          ),
                           _vm._v(" "),
-                          _c("span", { staticClass: "plan-price" }, [
-                            _vm._v("Price: $" + _vm._s(item.sale_price)),
-                          ]),
-                        ])
-                      : _vm._e(),
-                  ]
-                )
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-sm btn-success",
+                              on: {
+                                click: function ($event) {
+                                  return _vm.updateProductQuantity(
+                                    item.id,
+                                    "increment"
+                                  )
+                                },
+                              },
+                            },
+                            [_vm._v("+")]
+                          ),
+                        ]),
+                        _vm._v(" "),
+                        _c("span", { staticClass: "plan-price" }, [
+                          _vm._v("Price: $" + _vm._s(item.sale_price)),
+                        ]),
+                      ]),
+                    ])
+                  : _vm._e()
               }),
               _vm._v(" "),
               _c("div", {}, [
@@ -30048,7 +30140,6 @@ var render = function () {
                           staticClass: "form-control",
                           attrs: {
                             type: "text",
-                            name: "car_number",
                             value: "4242424242424242",
                             readonly: "",
                           },
@@ -30078,8 +30169,8 @@ var render = function () {
                               expression: "cvv",
                             },
                           ],
-                          staticClass: "form-control",
-                          attrs: { type: "text", name: "car_code", value: "" },
+                          staticClass: "form-control input-number",
+                          attrs: { type: "text", value: "" },
                           domProps: { value: _vm.cvv },
                           on: {
                             input: function ($event) {
@@ -30309,11 +30400,19 @@ var render = function () {
                               { staticClass: "summary-small-text pull-right" },
                               [
                                 _vm._v(
-                                  "\n\t\t\t\t\t\t\t\t\tQ: " +
+                                  "Q: " +
                                     _vm._s(summaryItem.quantity) +
-                                    " x  \n\t\t\t\t\t\t\t\t\tP:$" +
-                                    _vm._s(summaryItem.sale_price) +
-                                    " \n\t\t\t\t\t\t\t\t"
+                                    "      X"
+                                ),
+                              ]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "span",
+                              { staticClass: "summary-small-text pull-right" },
+                              [
+                                _vm._v(
+                                  "P: $" + _vm._s(summaryItem.sale_price) + " "
                                 ),
                               ]
                             ),
@@ -30329,9 +30428,14 @@ var render = function () {
                   _vm._m(13),
                   _vm._v(" "),
                   _c("div", { staticClass: "summary-price" }, [
-                    _c("p", { staticClass: "summary-text" }, [
-                      _vm._v("$" + _vm._s(_vm.items.totalAmount)),
-                    ]),
+                    _c(
+                      "p",
+                      {
+                        staticClass: "summary-text",
+                        staticStyle: { "font-weight": "bold" },
+                      },
+                      [_vm._v("$" + _vm._s(_vm.items.totalAmount))]
+                    ),
                   ]),
                 ]),
               ]),

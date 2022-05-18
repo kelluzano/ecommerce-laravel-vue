@@ -274,7 +274,7 @@ ol, ul {
 /*
  * BOOTSTRAP
  */
-.container{
+ .container{
     border: none;
 }
 .panel-footer{
@@ -367,12 +367,19 @@ hr{
     }
     
 }
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
 /*
 @media only screen and (max-width: 777px){
     .container{
         overflow-x: hidden;
     }
-}*/
+    }*/
 </style>
 
 @endsection

@@ -15,9 +15,6 @@
 
         @yield('header-styles')
 
-        <!--====== Favicon Icon ======-->
-        <link rel="shortcut icon" href="assets/images/favicon.png" type="image/png">
-
         <!--====== Bootstrap css ======-->
         <link rel="stylesheet" href="assets/css/bootstrap.min.css">
 

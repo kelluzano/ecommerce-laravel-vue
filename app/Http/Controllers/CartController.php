@@ -206,6 +206,31 @@ class CartController extends Controller
            return ['error' => 'Order failed'];
        }
 
+   }
 
+   public function updateProductQty(Request $request){
+
+        $product = Cart::where('user_id', auth()->user()->id)->where('product_id', $request->productId)->first();
+
+        if($request->type == "increment"){
+            $product->increment('quantity');
+        }else{
+            $product->decrement('quantity');
+        }
+
+        $data = [];
+        $data['quantity'] = $product->quantity;
+        $data['total'] = $product->quantity * $product->price;
+        $data['totalItemCount'] = Cart::where('user_id', auth()->user()->id)->sum('quantity');
+        return response()->json($data);
+   }
+
+   public function removeProduct(Request $request){
+
+        $product = Cart::where('user_id', auth()->user()->id)->where('product_id', $request->productId)->delete();
+        $msg = "Product removed.";
+        return ['message' => $msg,
+            'totalItemCount' => Cart::where('user_id', auth()->user()->id)->sum('quantity')
+        ];
    }
 }
