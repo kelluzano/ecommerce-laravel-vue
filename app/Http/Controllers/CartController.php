@@ -190,7 +190,7 @@ class CartController extends Controller
             ];
             
             $processingDetails = Processing::create([
-                'client_id' => auth()->user()->id,
+                'user_id' => auth()->user()->id,
                 'client_name' => $firstName.' '.$lastName,
                 'client_address' => json_encode($addressDetail),
                 'order_details' => json_encode($orderArray),

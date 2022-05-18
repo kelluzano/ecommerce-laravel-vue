@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('processings', function (Blueprint $table) {
             $table->id();
             $table->string('client_name');
+            $table->integer('user_id');
             $table->string('client_address');
             $table->string('order_details');
             $table->string('amount');
