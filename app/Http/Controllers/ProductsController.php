@@ -18,4 +18,13 @@ class ProductsController extends Controller
 
         return response()->json($products);
     }
+
+    public function viewProduct($slug){
+
+        $auth_user_id = auth()->user()->id ?? 0;
+
+        $product = Product::where('slug',$slug)->first();
+
+        return view('content.view-product', compact('auth_user_id', 'product'));
+    }
 }

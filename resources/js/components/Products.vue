@@ -4,13 +4,10 @@
            <div class="col-md-4" v-for="product in products" :key="product.id">
             <div class="single-product-items">
                 <div class="product-item-image">
-                    <a href="#"><img :src="product.image_name" alt="Product" height="320px"></a>
-                    <div class="product-discount-tag">
-                        <p>-$50</p>
-                    </div>
+                    <a :href="'view/product/'+product.slug"><img :src="product.image_name" alt="Product" height="320px"></a>
                 </div>
                 <div class="product-item-content text-center mt-30">
-                    <h5 class="product-title"><a href="#">{{product.name}}</a></h5>
+                    <h5 class="product-title"><a :href="'view/product/'+product.slug">{{product.name}}</a></h5>
                     <ul class="rating">
                         <li><i class="lni-star-filled"></i></li>
                         <li><i class="lni-star-filled"></i></li>

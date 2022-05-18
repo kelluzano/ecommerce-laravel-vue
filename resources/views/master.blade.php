@@ -16,28 +16,28 @@
         @yield('header-styles')
 
         <!--====== Bootstrap css ======-->
-        <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+        <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
 
         <!--====== Animate css ======-->
-        <link rel="stylesheet" href="assets/css/animate.css">
+        <link rel="stylesheet" href="{{ asset('assets/css/animate.css') }}">
 
         <!--====== Magnific Popup css ======-->
-        <link rel="stylesheet" href="assets/css/magnific-popup.css">
+        <link rel="stylesheet" href="{{ asset('assets/css/magnific-popup.css') }}">
 
         <!--====== Slick css ======-->
-        <link rel="stylesheet" href="assets/css/slick.css">
+        <link rel="stylesheet" href="{{ asset('assets/css/slick.css') }}">
 
         <!--====== Line Icons css ======-->
-        <link rel="stylesheet" href="assets/css/LineIcons.css">
+        <link rel="stylesheet" href="{{ asset('assets/css/LineIcons.css') }}">
 
         <!--====== Default css ======-->
-        <link rel="stylesheet" href="assets/css/default.css">
+        <link rel="stylesheet" href="{{ asset('assets/css/default.css') }}">
 
         <!--====== Style css ======-->
-        <link rel="stylesheet" href="assets/css/style.css">
+        <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
 
         <!--====== Responsive css ======-->
-        <link rel="stylesheet" href="assets/css/responsive.css">
+        <link rel="stylesheet" href="{{ asset('assets/css/responsive.css') }}">
 
 
 
@@ -147,30 +147,30 @@
     
     
     <!--====== jquery js ======-->
-    <script src="assets/js/vendor/modernizr-3.6.0.min.js"></script>
-    <script src="assets/js/vendor/jquery-1.12.4.min.js"></script>
+    <script src="{{asset('assets/js/vendor/modernizr-3.6.0.min.js') }}"></script>
+    <script src="{{asset('assets/js/vendor/jquery-1.12.4.min.js') }}"></script>
 
     
 
     <!--====== Bootstrap js ======-->
-    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="{{asset('assets/js/bootstrap.min.js') }}"></script>
     
     
     <!--====== Slick js ======-->
-    <script src="assets/js/slick.min.js"></script>
+    <script src="{{asset('assets/js/slick.min.js') }}"></script>
     
     <!--====== Magnific Popup js ======-->
-    <script src="assets/js/jquery.magnific-popup.min.js"></script>
+    <script src="{{asset('assets/js/jquery.magnific-popup.min.js') }}"></script>
 
     
     <!--====== nav js ======-->
-    <script src="assets/js/jquery.nav.js"></script>
+    <script src="{{asset('assets/js/jquery.nav.js') }}"></script>
     
     <!--====== Nice Number js ======-->
-    <script src="assets/js/jquery.nice-number.min.js"></script>
+    <script src="{{asset('assets/js/jquery.nice-number.min.js') }}"></script>
     
     <!--====== Main js ======-->
-    <script src="assets/js/main.js"></script>
+    <script src="{{asset('assets/js/main.js') }}"></script>
 
     <script src="{{ asset('js/app.js') }}" defer></script>
 
