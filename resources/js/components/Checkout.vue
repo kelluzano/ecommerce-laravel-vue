@@ -1,5 +1,6 @@
 <template>
-	<div>
+	<div id="axiosForm">
+		<div class="loader" v-if="isLoading"></div>
 		<div class="container checkoutBox">
 			<div class="row">
 				<div class="col-lg-8 col-md-8 col-sm-7 col-xs-12">
@@ -25,7 +26,7 @@
 							</div>
 						</div>
 
-						<div class="">
+						<div v-if="items.totalAmount != 0">
 							<!--SHIPPING METHOD-->
 							<div class="panel panel-info">
 
@@ -208,81 +209,90 @@
 </template>
 
 <script>
-	export default{
-		data(){
-			return {
-				items: [],
-				firstName: '',
-				lastName: '',
-				email: '',
-				phone_number: '',
-				address: '',
-				city: '',
-				state: '',
-				zipCode: '',
-				country: '',
-				cardType: '',
-				cardNumber: '4242424242424242',
-				expMonth: '',
-				expYear: '',
-				cvv: '',
-				newyears: [],
-			}
+export default{
+	data(){
+		return {
+			items: [],
+			firstName: '',
+			lastName: '',
+			email: '',
+			phone_number: '',
+			address: '',
+			city: '',
+			state: '',
+			zipCode: '',
+			country: '',
+			cardType: '',
+			cardNumber: '4242424242424242',
+			expMonth: '',
+			expYear: '',
+			cvv: '',
+			newyears: [],
+			isLoading: false,
+		}
+	},
+	methods: {
+		getCartItems(){
+			axios.post('/checkout/get/items')
+			.then((response) => {
+				this.items = response.data
+				console.log(Object.keys(this.items).length);
+			});
+
 		},
-		methods: {
-			getCartItems(){
-				axios.post('/checkout/get/items')
-				.then((response) => {
-					this.items = response.data
-					console.log(this.items);
-				});
-				
-			},
-			async getUserAddress(){
-				if(this.firstName != '' && this.address != '' && this.cardNumber != '' && this.cvv != ''){
-					let response = await axios.post('/process/user/payment',{
-						'firstName': this.firstName,
-						'lastName': this.lastName,
-						'email': this.email,
-						'phone_number': this.phone_number,
-						'address': this.address,
-						'city': this.city,
-						'state': this.state,
-						'zipCode': this.zipCode,
-						'country': this.country,
-						'cardType': this.cardType,
-						'cardNumber': this.cardNumber,
-						'expMonth': this.expMonth,
-						'expYear': this.expYear,
-						'cvv': this.cvv,
-						'amount': this.items.totalAmount,
-						'order': this.items,
-					});
+		async getUserAddress(){
+			if(this.firstName != '' && this.address != '' && this.cardNumber != '' && this.cvv != ''){
+				this.isLoading = true;
+				console.log(this.isLoading);
+				axios.post('/process/user/payment',{
+					'firstName': this.firstName,
+					'lastName': this.lastName,
+					'email': this.email,
+					'phone_number': this.phone_number,
+					'address': this.address,
+					'city': this.city,
+					'state': this.state,
+					'zipCode': this.zipCode,
+					'country': this.country,
+					'cardType': this.cardType,
+					'cardNumber': this.cardNumber,
+					'expMonth': this.expMonth,
+					'expYear': this.expYear,
+					'cvv': this.cvv,
+					'amount': this.items.totalAmount,
+					'order': this.items,
+				}).then((response) => {
 					if(response.data.success){
 						this.$toastr.s(response.data.success);
 					}else{
 						this.$toastr.e(response.data.error);
 					}
+				}).catch((error) => {
+					console.log(error);
+				}).finally( () => {
+					console.log('disable spinner');
+				});
 
-					setTimeout(() => {
-						window.location.href="/";
-					},2500)
-					
-				}else{
-					this.$toastr.e('User info incomplete');
-				}
-			},
-			updateProductQuantity(productId,type){
-				const vm = this;
 
-				axios.post('/product/update/quantity',{
-					'productId': productId,
-					'type': type
-				}).then((response) => {
-					vm.items[productId].quantity = response.data.quantity;
-					vm.items[productId].total = response.data.total;
-					vm.$root.$emit('changeInCart', response.data.totalItemCount);
-					
+				setTimeout(() => {
+					window.location.href="/";
+				},2500)
+
+			}else{
+				this.$toastr.e('User info incomplete');
+			}
+		},
+		updateProductQuantity(productId,type){
+			const vm = this;
+
+			axios.post('/product/update/quantity',{
+				'productId': productId,
+				'type': type
+			}).then((response) => {
+				vm.items[productId].quantity = response.data.quantity;
+				vm.items[productId].total = response.data.total;
+				vm.$root.$emit('changeInCart', response.data.totalItemCount);
+
 					// //calculate overall total
 					var overallTotal = 0;
 					$.each(vm.items, function (key,value){
@@ -294,48 +304,70 @@
 					vm.items.totalAmount = overallTotal;
 
 				});
-			},
-			removeFromCart(index){
+		},
+		removeFromCart(index){
 
-				axios.post('/product/remove', {
-					'productId': index,
-				}).then((response) => {
-					
-					this.$toastr.e(response.data.message);
-					this.$root.$emit('changeInCart', response.data.totalItemCount);
-					this.$delete(this.items,index);
+			axios.post('/product/remove', {
+				'productId': index,
+			}).then((response) => {
 
-					var overallTotal = 0;
-					$.each(this.items, function (key,value){
-						if(typeof value.total != "undefined"){
-							overallTotal += value.total;
-							
-						}
-					});
-					this.items.totalAmount = overallTotal;
+				this.$toastr.e(response.data.message);
+				this.$root.$emit('changeInCart', response.data.totalItemCount);
+				this.$delete(this.items,index);
 
+				var overallTotal = 0;
+				$.each(this.items, function (key,value){
+					if(typeof value.total != "undefined"){
+						overallTotal += value.total;
+
+					}
 				});
-			},
-		},	
-		created(){
-			this.getCartItems();
+				this.items.totalAmount = overallTotal;
+
+			});
+		},
+	},	
+	created(){
+		this.getCartItems();
+
+	},
+	computed: {
+		years(){
+			const year = new Date().getFullYear()
+			let years = [];
+			let newYear = year + 10;
+			for(var i = year; i <= newYear; i++){
+				years.push(i);
+			}
+			return this.newyears = years;
 
 		},
-		computed: {
-			years(){
-				const year = new Date().getFullYear()
-				let years = [];
-				let newYear = year + 10;
-				for(var i = year; i <= newYear; i++){
-					years.push(i);
-				}
-				return this.newyears = years;
-
-			},
 
 
-
-		}
 
 	}
+
+}
 </script>
+
+
+<style scoped>
+#axiosForm{  /* Components Root Element ID */
+    position: relative;
+}
+.loader{  /* Loader Div Class */
+    position: absolute;
+    top:0px;
+    right:0px;
+    width:100%;
+    height:100%;
+    background-color:#eceaea;
+    background-image: url('http://i.stack.imgur.com/FhHRx.gif');
+    background-size: 50px;
+    background-repeat:no-repeat;
+    background-position:center;
+    z-index:10000000;
+    opacity: 0.4;
+    filter: alpha(opacity=40);
+}
+</style>

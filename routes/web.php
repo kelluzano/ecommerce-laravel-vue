@@ -29,7 +29,7 @@ Route::middleware(['auth', 'verified'])->group( function (){
 
     Route::post('/checkout/get/items', [App\Http\Controllers\CartController::class, 'getCartItemsForCheckout'])->name('checkout.items');
 
-    Route::post('/process/user/payment', [App\Http\Controllers\CartController::class, 'processPayment'])->name('process.payment');
+    Route::post('/process/user/payment', [App\Http\Controllers\ProcessingController::class, 'processPayment'])->name('process.payment');
     Route::post('/product/update/quantity', [App\Http\Controllers\CartController::class, 'updateProductQty'])->name('update.product.quantity');
 
     Route::post('/product/remove', [App\Http\Controllers\CartController::class, 'removeProduct'])->name('product.remove');
